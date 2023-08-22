@@ -24,7 +24,7 @@ from langchain.schema import (
     SystemMessage
 )
 
-chatModel = ChatOpenAI(temperature=0)
+chatModel = ChatOpenAI(temperature=0.1)
 
 '''
 [Synthesis]

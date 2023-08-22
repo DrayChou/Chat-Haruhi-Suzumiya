@@ -128,6 +128,7 @@ def create_gradio(chat_system):
 
             with gr.Column(visible=False) as chat:
                 custom_api_key = gr.Textbox(label="输入key", interactive=True, placeholder="sr-xxxxxxxx")
+                custom_api_base = gr.Textbox(label="输入base url", interactive=True, placeholder="https://api.openai.com/v1")
                 image_input = gr.Textbox(visible=False)
                 japanese_input = gr.Textbox(visible=False)
                 with gr.Row():
@@ -151,7 +152,7 @@ def create_gradio(chat_system):
                              outputs=[custom_msg, chatbot, image_input])
             # custom_audio_btn.click(fn=update_audio, inputs=[audio, japanese_output], outputs=audio)
             generate_btn.click(generate, role_name, [gen, chat])
-    demo.launch(debug=True, share=True)
+    demo.launch(debug=True, share=True, server_name="0.0.0.0", server_port=8081)
 
 
 # chat_person = ChatPerson()

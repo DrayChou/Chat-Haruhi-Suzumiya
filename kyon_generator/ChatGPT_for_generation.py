@@ -136,7 +136,7 @@ class ChatGPT:
             print("Image doesn't exist")
 
     # 一个封装 OpenAI 接口的函数，参数为 Prompt，返回对应结果
-    def get_completion_from_messages(self, messages, model="gpt-3.5-turbo", temperature=0):
+    def get_completion_from_messages(self, messages, model="gpt-3.5-turbo", temperature=0.1):
         response = openai.ChatCompletion.create(
             model=model,
             messages=messages,
@@ -396,7 +396,7 @@ class ChatGPT:
 
             messages = self.organize_message_langchain_for_training(stories, history_chat, history_response, new_query)
 
-        chat = ChatOpenAI(temperature=0)
+        chat = ChatOpenAI(temperature=0.1)
         return_msg = chat(messages)
 
         response = return_msg.content

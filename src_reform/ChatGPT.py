@@ -61,6 +61,17 @@ class ChatGPT:
         self.dialogue_path = configuration['dialogue_path']
         self.api_key = configuration["openai_key_1"] + configuration["openai_key_2"]
         # os.environ["OPENAI_API_KEY"] = openai.api_key
+        if "OPENAI_API_KEY" in os.environ.keys():
+          self.api_key = os.environ["OPENAI_API_KEY"]
+
+        self.api_base = None
+        if "openai_base" in configuration.keys():
+            self.api_base = configuration['openai_base']
+        if "OPENAI_API_BASE" in os.environ.keys():
+          self.api_base = os.environ["OPENAI_API_BASE"]
+        if self.api_base is None or len(self.api_base) < 1:
+          self.api_base = "https://api.openai.com/v1"
+        
         self.enc = tiktoken.get_encoding("cl100k_base")
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # 预加载jsonl文件
@@ -115,7 +126,7 @@ class ChatGPT:
             print("Image doesn't exist")
 
     # 一个封装 OpenAI 接口的函数，参数为 Prompt，返回对应结果
-    def get_completion_from_messages(self, messages, model="gpt-3.5-turbo", temperature=0):
+    def get_completion_from_messages(self, messages, model="gpt-3.5-turbo", temperature=0.1):
         # openai.api_key = self.api_key
         # print(openai.api_key)
         response = openai.ChatCompletion.create(
@@ -264,10 +275,9 @@ class ChatGPT:
         messages = self.organize_message_langchain(story, history_chat, history_response, new_query)
         # print("this is os.environment:  ", os.environ["OPENAI_API_KEY"])
         # print("OPENAI_API_KEY" in os.environ.keys())
-        if not "OPENAI_API_KEY" in os.environ.keys():
-            chat = ChatOpenAI(temperature=0, openai_api_key=self.api_key, model_kwargs={"stop": ["\n", "」"]})
-        else:
-            chat = ChatOpenAI(temperature=0, model_kwargs={"stop": ["\n", "」"]})
+        print("self.api_key", self.api_key)
+        print("self.api_base", self.api_base)
+        chat = ChatOpenAI(temperature=0.1, openai_api_key=self.api_key, openai_api_base=self.api_base, model_kwargs={"stop": ["\n", "」"]})
         return_msg = chat(messages)
         response = return_msg.content + "」"
 
